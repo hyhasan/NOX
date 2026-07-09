@@ -68,6 +68,6 @@ export function resetFailover(): void {
   healthStatus.activeUrl = currentDbUrl;
 }
 
-if (typeof setInterval !== "undefined") {
+if (typeof setInterval !== "undefined" && !process.env.VERCEL) {
   setInterval(checkDatabaseHealth, CHECK_INTERVAL);
 }
