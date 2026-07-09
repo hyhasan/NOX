@@ -3,8 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 
 export async function GET() {
-  const pages = await prisma.page.findMany({ orderBy: { created_at: "desc" } });
-  return NextResponse.json(pages);
+  try {
+    const pages = await prisma.page.findMany({ orderBy: { created_at: "desc" } });
+    return NextResponse.json({ data: pages });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch pages" }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {

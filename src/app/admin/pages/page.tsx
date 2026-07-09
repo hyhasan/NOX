@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 export default function AdminPagesPage() {
+  const { toast } = useToast();
   const [pages, setPages] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
@@ -20,8 +22,13 @@ export default function AdminPagesPage() {
   useEffect(() => { load(); }, []);
 
   async function load() {
-    const res = await fetch("/api/pages");
-    setPages(await res.json());
+    try {
+      const res = await fetch("/api/pages");
+      const json = await res.json();
+      setPages(json.data || json);
+    } catch {
+      toast({ type: "error", title: "Failed to load pages" });
+    }
   }
 
   function editPage(p: any) {
@@ -32,9 +39,17 @@ export default function AdminPagesPage() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.title.trim()) { toast({ type: "error", title: "Title required" }); return; }
     const url = editing ? `/api/pages/${editing}` : "/api/pages";
     const method = editing ? "PUT" : "POST";
-    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+    try {
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      if (!res.ok) { toast({ type: "error", title: "Save failed" }); return; }
+      toast({ type: "success", title: editing ? "Page updated" : "Page created" });
+    } catch {
+      toast({ type: "error", title: "Connection error" });
+      return;
+    }
     setShowForm(false);
     setEditing(null);
     setForm({ title: "", slug: "", content_html: "", meta_title: "", meta_description: "", og_image: "", is_published: false });
@@ -43,7 +58,14 @@ export default function AdminPagesPage() {
 
   async function remove(id: string) {
     if (!confirm("Delete this page?")) return;
-    await fetch(`/api/pages/${id}`, { method: "DELETE" });
+    try {
+      const res = await fetch(`/api/pages/${id}`, { method: "DELETE" });
+      if (!res.ok) { toast({ type: "error", title: "Delete failed" }); return; }
+      toast({ type: "success", title: "Page deleted" });
+    } catch {
+      toast({ type: "error", title: "Connection error" });
+      return;
+    }
     load();
   }
 

@@ -19,7 +19,8 @@ export default function AdminCategoriesPage() {
 
   async function load() {
     const res = await fetch("/api/categories");
-    setCategories(await res.json());
+    const json = await res.json();
+    setCategories(json.data || json);
   }
 
   function editCategory(cat: any) {

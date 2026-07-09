@@ -25,7 +25,8 @@ export default function AdminOrdersPage() {
 
   async function load() {
     const res = await fetch("/api/orders");
-    setOrders(await res.json());
+    const json = await res.json();
+    setOrders(json.data || json);
   }
 
   async function updateStatus(id: string, status: string) {

@@ -8,6 +8,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const data: any = {};
     if (body.title !== undefined) data.title = body.title;
     if (body.subtitle !== undefined) data.subtitle = body.subtitle;
+    if (body.image_url !== undefined) data.image_url = body.image_url;
     if (body.image_id !== undefined) data.image_id = body.image_id;
     if (body.mobile_image_id !== undefined) data.mobile_image_id = body.mobile_image_id;
     if (body.link_url !== undefined) data.link_url = body.link_url;

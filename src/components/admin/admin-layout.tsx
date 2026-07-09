@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   LayoutDashboard, Package, ShoppingCart, FileText,
-  Palette, Settings, LogOut, Menu, X, ChevronDown, ChevronRight,
+  Palette, Settings, LogOut, Menu, X, ChevronDown, ChevronRight, Tag, Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -42,6 +42,8 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Orders", icon: <ShoppingCart className="h-4 w-4" />, href: "/admin/orders" },
+  { label: "Coupons", icon: <Tag className="h-4 w-4" />, href: "/admin/coupons" },
+  { label: "Admins", icon: <Users className="h-4 w-4" />, href: "/admin/users" },
   {
     label: "Content",
     icon: <FileText className="h-4 w-4" />,
@@ -77,8 +79,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (!admin && !isLoginPage) {
-      router.push("/admin/login");
+    if (!isLoginPage) {
+      if (!admin) {
+        router.push("/admin/login");
+      }
     }
   }, [admin, isLoginPage, router]);
 

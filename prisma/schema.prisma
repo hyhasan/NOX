@@ -1121,13 +1121,14 @@ model Banner {
   id              String   @id @default(cuid())
   title           String?
   subtitle        String?
+  image_url       String?
   image_id        String?
   image           Media?   @relation("BannerImage", fields: [image_id], references: [id], onDelete: SetNull)
   mobile_image_id String?
   mobile_image    Media?   @relation("BannerMobileImage", fields: [mobile_image_id], references: [id], onDelete: SetNull)
   link_url        String?
   link_text       String?
-  position        String   @default("hero") // hero, promo, sidebar, bottom
+  position        String   @default("hero") // hero, promo, popup, sidebar, bottom
   is_active       Boolean  @default(true)
   sort_order      Int      @default(0)
   bg_color        String?

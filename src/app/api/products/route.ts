@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     orderBy: { created_at: "desc" },
   });
 
-  return NextResponse.json(products);
+  return NextResponse.json({ data: products });
 }
 
 export async function POST(request: NextRequest) {

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const banners = await prisma.banner.findMany({ orderBy: { sort_order: "asc" } });
-  return NextResponse.json(banners);
+  try {
+    const banners = await prisma.banner.findMany({ orderBy: { sort_order: "asc" } });
+    return NextResponse.json({ data: banners });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch banners" }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -12,6 +16,7 @@ export async function POST(request: NextRequest) {
     const data: any = {
       title: body.title || null,
       subtitle: body.subtitle || null,
+      image_url: body.image_url || null,
       link_url: body.link_url || null,
       link_text: body.link_text || null,
       position: body.position || "hero",

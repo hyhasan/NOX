@@ -56,6 +56,40 @@ To understand the full project, read these in order:
 - **Build status**: TypeScript 0 errors, ESLint 0 errors (1 pre-existing warning in seed.ts)
 - **State changes**: Moved checkout success, payment, order tracking, about, coupon validate from "Not Yet Built" to "Built & Ready"
 
+### Session 2026-07-09 — Full Admin Dashboard Build (Continued)
+- **New API**: `GET/POST /api/admin/users` — Admin user CRUD (list, create with role + validation)
+- **New API**: `GET/PUT/DELETE /api/admin/users/[id]` — Admin user single CRUD (update, delete, self-protection)
+- **New page**: `/admin/users` — Full admin user management UI with table, create/edit forms, role badges, self-protection
+- **New**: Admin Users link added to sidebar navigation
+- **Enhanced**: Dashboard — added Quick Actions section (Create Product, View Orders, Manage Admins, Manage Coupons)
+- **Build status**: TypeScript 0 errors, ESLint 0 errors (4 pre-existing warnings)
+- **State changes**: Admin users moved from "Not Yet Built" to "Built & Ready"
+
+### Session 2026-07-09 — Banner Popup/Promo Enhancement
+- **Enhanced**: `/admin/banners` — Added subtitle, link_text, bg_color (color picker), text_color (color picker) fields
+- **New positions**: `popup` (Popup Offer with modal card preview + close button) and `promo` (Promo Bar with inline styling)
+- **Live preview panel**: Side-by-side visual preview showing banner as popup modal, promo bar, or hero image
+- **Schema**: Added `image_url` field to Banner model (`prisma/schema.prisma`)
+- **Fixed**: `POST /api/banners` and `PUT /api/banners/[id]` — now persist `image_url`, `bg_color`, `text_color`, `subtitle`, `link_text`
+- **Build status**: TypeScript 0 errors, ESLint 0 errors (5 pre-existing warnings)
+- **State changes**: Banner popup/promo moved from "Not Yet Built" to "Built & Ready"
+
+### Session 2026-07-09 — Full Admin Dashboard Build
+- **Fixed**: Admin login redirect — Changed `AdminRootLayout` to use `key={pathname}` so `AdminLayout` remounts on route change, re-reading localStorage from `useState` initializer
+- **Fixed**: All admin pages now handle `{ data }` API wrapper (dashboard, products, orders, categories, pages, banners)
+- **Fixed**: Dashboard data fetching — added `json.data || json` fallback, error state, today's sales, pending orders count, orders-by-status breakdown
+- **Enhanced**: Dashboard — added today's sales trend, pending orders badge, low stock count, orders by status summary, error state, date display
+- **Enhanced**: Settings page — now includes full site settings section (site name, tagline, logo, favicon, support email/phone, address, SEO defaults, currency, tax rate, free shipping threshold, footer text) plus admin credentials section
+- **New API**: `GET/POST /api/coupons` — Coupon CRUD (list, create with validation, unique code check)
+- **New API**: `GET/PUT/DELETE /api/coupons/[id]` — Coupon single CRUD (get, update, delete)
+- **New page**: `/admin/coupons` — Full coupon management UI with form (code, type, value, limits, dates, active/stackable toggles), table (code, discount, usage, status, expiry, actions)
+- **New**: Coupon link added to sidebar navigation
+- **Fixed**: All API GET routes wrapped with `try-catch` + `{ data }` wrapper (categories, pages, banners, products)
+- **Fixed**: All bare-array API responses now use `{ data: [...] }` format for consistency
+- **Added**: `serializeCoupon()` and enhanced `serializeOrder()` in `src/lib/serialize.ts`
+- **Build status**: TypeScript 0 errors, ESLint 0 errors (4 pre-existing warnings)
+- **State changes**: Coupons moved from "Not Yet Built" to "Built & Ready"
+
 ### Session 2026-07-09 — Render Deployment Setup
 - **Created**: `render.yaml` — Blueprint with Web Service + PostgreSQL DB, env vars, health check
 - **Created**: Prisma migration — `prisma/migrations/20260709000000_init/migration.sql` (full 33-table schema)
@@ -78,12 +112,24 @@ To understand the full project, read these in order:
 | Decimal serialization | ✅ Complete | `src/lib/serialize.ts` |
 | Zustand guest cart | ✅ Complete | `src/lib/store.ts` |
 | File upload utilities | ✅ Complete | `src/lib/upload.ts` |
-| Admin portal (9 pages) | ✅ Complete | `src/app/admin/*` |
+| Admin portal — dashboard | ✅ Complete | `src/app/admin/dashboard/page.tsx` |
+| Admin portal — products CRUD | ✅ Complete | `src/app/admin/products/page.tsx` |
+| Admin portal — orders management | ✅ Complete | `src/app/admin/orders/page.tsx` |
+| Admin portal — categories CRUD | ✅ Complete | `src/app/admin/categories/page.tsx` |
+| Admin portal — CMS pages | ✅ Complete | `src/app/admin/pages/page.tsx` |
+| Admin portal — banners (hero/promo/popup) | ✅ Complete | `src/app/admin/banners/page.tsx` |
+| Admin portal — settings (site + credentials) | ✅ Complete | `src/app/admin/settings/page.tsx` |
+| Admin portal — appearance | ✅ Complete | `src/app/admin/appearance/page.tsx` |
+| Admin portal — coupons CRUD | ✅ Complete | `src/app/admin/coupons/page.tsx` |
+| Admin portal — admin users management | ✅ Complete | `src/app/admin/users/page.tsx` |
 | Product→Payment flow (8 pages) | ✅ Complete | product, cart, checkout, payment, success, tracking |
 | Coupon validate API | ✅ Complete | `src/app/api/coupons/validate/route.ts` |
+| Coupon CRUD API | ✅ Complete | `src/app/api/coupons/**/*.ts` |
+| Admin users CRUD API | ✅ Complete | `src/app/api/admin/users/**/*.ts` |
 | Stock dec/inventory logging | ✅ Complete | `POST /api/orders` via `$transaction` |
 | About page | ✅ Complete | `src/app/about/page.tsx` |
-| 16 API routes | ✅ Complete | `src/app/api/*` (1 new: coupons/validate) |
+| 21 API routes | ✅ Complete | `src/app/api/*` |
+| Banner popup/promo support | ✅ Complete | `prisma/schema.prisma` — Banner model |
 | 10 UI components | ✅ Complete | `src/components/ui/*` |
 | Docker setup | ✅ Complete | `docker-compose.yml`, `Dockerfile` |
 | Liquid Glass design system | ✅ Complete | `src/app/globals.css` |
@@ -102,7 +148,6 @@ To understand the full project, read these in order:
 | Email notification sending | Low | Templates seeded, SMTP configured |
 | Image processing pipeline | Low | Sharp installed, not wired to uploads |
 | Warehouse/inventory UI | Low | Models exist, no admin UI |
-| Coupon management UI | Low | Coupons seeded, no admin UI |
 | Multi-currency | Low | Currency fields on Order, PriceList |
 | Review moderation UI | Low | Review model complete, no admin UI |
 
@@ -129,7 +174,7 @@ To understand the full project, read these in order:
 
 - ❌ **Don't** use `next-auth` — admin auth is custom JWT in localStorage
 - ❌ **Don't** use `any` type — we already have `@typescript-eslint/no-explicit-any: "off"`, but avoid it anyway
-- ❌ **Don't** store image URLs directly on business entities — always go through `Media` model
+- ❌ **Don't** store image URLs directly on business entities — always go through `Media` model (exception: Banner.image_url for direct URL convenience)
 - ❌ **Don't** use `require()` in `.ts` files — only `.cjs` scripts may use it
 - ❌ **Don't** import from `@prisma/client` directly — use `@/lib/prisma`
 - ❌ **Don't** miss `@db.Decimal(10, 2)` on monetary fields in schema
@@ -173,9 +218,14 @@ To understand the full project, read these in order:
 | `/api/admin/auth` | POST | Login |
 | `/api/admin/password` | PUT | Change password |
 | `/api/admin/settings` | GET, PUT | Site settings |
+| `/api/admin/password` | PUT | Change password |
+| `/api/admin/users` | GET, POST | Admin users CRUD |
+| `/api/admin/users/[id]` | GET, PUT, DELETE | Single admin user |
+| `/api/coupons` | GET, POST | Coupons CRUD |
+| `/api/coupons/[id]` | GET, PUT, DELETE | Single coupon |
+| `/api/coupons/validate` | GET | Validate coupon code |
 | `/api/contact` | POST | Contact form |
 | `/api/health` | GET | DB health check |
-| `/api/coupons/validate` | GET | Validate coupon code |
 
 ### Library (`src/lib/`)
 | File | Purpose |

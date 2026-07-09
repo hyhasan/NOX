@@ -34,13 +34,16 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     loadProducts();
-    fetch("/api/categories").then((r) => r.json()).then(setCategories);
+    fetch("/api/categories").then(async (r) => {
+      const json = await r.json();
+      setCategories(json.data || json);
+    });
   }, []);
 
   async function loadProducts() {
     const res = await fetch("/api/products");
-    const data = await res.json();
-    setProducts(data);
+    const json = await res.json();
+    setProducts(json.data || json);
   }
 
   function editProduct(product: any) {
