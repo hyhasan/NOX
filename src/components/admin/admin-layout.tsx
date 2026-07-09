@@ -60,6 +60,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const router = useRouter();
   const pathname = usePathname();
+  const isLoginPage = pathname === "/admin/login";
+
   const [admin, setAdmin] = useState<AdminUser | null>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("nox-admin");
@@ -75,10 +77,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (!admin) {
+    if (!admin && !isLoginPage) {
       router.push("/admin/login");
     }
-  }, [admin, router]);
+  }, [admin, isLoginPage, router]);
 
   const logout = () => {
     localStorage.removeItem("nox-admin");
@@ -92,7 +94,9 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     );
   };
 
-  if (!admin) return null;
+  if (!admin && !isLoginPage) return null;
+
+  if (isLoginPage) return <>{children}</>;
 
   return (
     <AdminContext.Provider value={{ admin, logout }}>
@@ -189,7 +193,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             </Button>
             <div className="flex-1" />
             <span className="text-sm text-neutral-500">
-              Welcome, <strong>{admin.username}</strong>
+              Welcome, <strong>{admin!.username}</strong>
             </span>
           </header>
           <main className="flex-1 overflow-y-auto p-6">{children}</main>
